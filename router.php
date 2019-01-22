@@ -3,10 +3,7 @@ class Router
 {
     private $request;
 
-    private $supportedHttpMethods = array(
-        "GET",
-        "POST",
-    );
+    private static $supportedHttpMethods = ["GET", "POST"];
 
     /**
      * Initializes a new instance of the Router class.
@@ -20,7 +17,7 @@ class Router
     public function __call($name, $args)
     {
         list($route, $callback) = $args;
-        if (!in_array(strtoupper($name), $this->supportedHttpMethods)) {
+        if (!in_array(strtoupper($name), self::supportedHttpMethods)) {
             $this->invalidMethodHandler();
         }
         $this->{strtolower($name)}[$this->formatRoute($route)] = $callback;
