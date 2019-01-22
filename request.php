@@ -1,7 +1,6 @@
 <?php
 class Request
 {
-
     private $method;
     private $path;
     private $pathSegments;
@@ -17,7 +16,7 @@ class Request
      * @param array|null $headers
      * @return void
      */
-    public function __construct(): void
+    public function __construct(?string $method = null, ?string $path = null, ?string $query  = null, ?String $headers  = null)
     {
         $this->parseMethod($method);
         $this->parsePath($path);
@@ -31,10 +30,10 @@ class Request
      * @param string|null $path
      * @return void
      */
-    private function parsePath(string $path = null): void
+    private function parsePath(?string $path) : void
     {
         if (!$path) {
-            $path = $_SERVER['PATH_INFO'] ?  ? '/';
+            $path = $_SERVER['PATH_INFO'] ?? '/';
         }
         $this->path         = $path;
         $this->pathSegments = explode('/', ltrim($path, '/'));
@@ -45,10 +44,10 @@ class Request
      * @param string|null $method
      * @return void
      */
-    private function parseMethod(string $method = null) : void
+    private function parseMethod(?string $method) : void
     {
         if (!$method) {
-            $method = $_SERVER['REQUEST_METHOD'] ?  ? 'GET';
+            $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         }
         $this->method = $method;
     }
@@ -58,16 +57,16 @@ class Request
      * @param string|null $query
      * @return void
      */
-    private function parseParams(string $query = null) : void
+    private function parseParams(?string $query) : void
     {
         if (!$query) {
-            $query = $_SERVER['QUERY_STRING'] ?  ? '';
+            $query = $_SERVER['QUERY_STRING'] ?? '';
         }
         $query = str_replace('][]=', ']=', str_replace('=', '[]=', $query));
         parse_str($query, $this->params);
     }
 
-    private function parseHeaders(array $headers = null) : void
+    private function parseHeaders(?array $headers) : void
     {
         if (!$headers) {
             $headers = array();
@@ -102,7 +101,7 @@ class Request
         }
         return $assoc;
     }
-    private function parseBody(string $body = null) /*: void*/
+    private function parseBody(?string $body) : void
     {
         if (!$body) {
             $body = file_get_contents('php://input');
@@ -110,7 +109,7 @@ class Request
         $this->body = $this->decodeBody($body);
     }
 
-    public function addHeader(string $key, string $value)
+    public function addHeader(string $key, string $value):void
     {
         $this->headers[$key] = $value;
     }
@@ -156,5 +155,4 @@ class Request
         }
         return $str;
     }
-
 }
